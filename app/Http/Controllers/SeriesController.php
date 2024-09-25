@@ -29,15 +29,35 @@ class SeriesController extends Controller
     public function store(Request $request)
     {   
         $serie = Serie::create($request->all());
-        session(['mensagem.sucesso' => "A Série '$serie->nome' foi salva com sucesso!"]);
-        return to_route('series.index');
+
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "A Série '$serie->nome' foi salva com sucesso!");
     }
 
     public function destroy(Serie $series)
     {
         $series->delete();
-        session(['mensagem.sucesso' => "A série '$series->nome' foi removida com sucesso!"]);
 
-        return to_route('series.index');
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "A série '$series->nome' foi removida com sucesso!");
+    }
+
+    public function edit(Serie $series)
+    {
+        return view('series.edit')
+            ->with('series', $series);
+    }
+
+    public function update(Request $request, Serie $series)
+    {
+        $validatedData = $request->validate([
+            'nome' => 'required|string|max:255'
+        ]);
+
+        $series->nome = $validatedData['nome'];
+        $series->save();
+
+        return to_route('series.index')
+            ->with('mensagem.sucesso', "A série '$series->nome' foi atualizada!");
     }
 }
