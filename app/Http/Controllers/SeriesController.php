@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\DB;
 class SeriesController extends Controller
 {
     
-    public function index() 
+    public function index(Request $request) 
     {
         $series = Serie::query()->orderBy('nome')->get();
-        return view('series.index')->with('series', $series);
+
+        $successMessage = session('mensagem.sucesso');
+        $request->session()->forget('mensagem.sucesso');
+
+        return view('series.index')
+            ->with('series', $series)
+            ->with('mensagemSucesso', $successMessage);
     }
 
     public function create()
@@ -22,13 +28,16 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {   
-        Serie::create($request->all());
+        $serie = Serie::create($request->all());
+        session(['mensagem.sucesso' => "A Série '$serie->nome' foi salva com sucesso!"]);
         return to_route('series.index');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Serie $series)
     {
-        Serie::destroy($request->id);
+        $series->delete();
+        session(['mensagem.sucesso' => "A série '$series->nome' foi removida com sucesso!"]);
+
         return to_route('series.index');
     }
 }
