@@ -12,11 +12,7 @@
           <li class="list-group-item d-flex justify-content-between align-items-center">
                {{ $serie->nome}}
                <div class="d-flex w-25 justify-content-end">
-                    <form action="{{ route('series.edit', $serie->id) }}" method="post">
-                         @csrf
-                         @method('PUT')
-                         <button class="btn btn-warning btn-sm">update</button>
-                    </form>
+                    <a href="{{ route('series.edit', $serie->id) }}" class="btn btn-primary btn-sm">E</a>
                     <form class="ms-2" action="{{ route('series.destroy', $serie->id) }}" method="post">
                          @csrf
                          @method('DELETE')

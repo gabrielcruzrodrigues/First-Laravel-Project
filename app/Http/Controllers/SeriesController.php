@@ -28,6 +28,8 @@ class SeriesController extends Controller
 
     public function store(Request $request)
     {   
+        $request->validate(['nome' => 'required|string|min:3']);
+        
         $serie = Serie::create($request->all());
 
         return to_route('series.index')
@@ -50,11 +52,9 @@ class SeriesController extends Controller
 
     public function update(Request $request, Serie $series)
     {
-        $validatedData = $request->validate([
-            'nome' => 'required|string|max:255'
-        ]);
+        $request->validate(['nome' => 'required|string|max:255']);
 
-        $series->nome = $validatedData['nome'];
+        $series->nome = $request->nome;
         $series->save();
 
         return to_route('series.index')

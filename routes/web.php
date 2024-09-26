@@ -12,7 +12,7 @@ Route::controller(SeriesController::class)->group(function () {
     Route::get("/series/create", 'create')->name('series.create');
     Route::post("/series/save", 'store')->name('series.store');
     Route::delete('/series/destroy/{series}', 'destroy')->name('series.destroy');
-    Route::put('/series/{series}/edit', 'edit')->name('series.edit');
+    Route::get('/series/{series}/edit', 'edit')->name('series.edit');
     Route::put('/series/{series}', 'update')->name('series.update');
 });
 
