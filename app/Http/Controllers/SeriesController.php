@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SeriesFormRequest;
 use App\Models\Serie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,10 +27,8 @@ class SeriesController extends Controller
         return view('series.create');
     }
 
-    public function store(Request $request)
-    {   
-        $request->validate(['nome' => 'required|string|min:3']);
-        
+    public function store(SeriesFormRequest $request)
+    {           
         $serie = Serie::create($request->all());
 
         return to_route('series.index')
@@ -46,14 +45,13 @@ class SeriesController extends Controller
 
     public function edit(Serie $series)
     {
+        dd($series->season);
         return view('series.edit')
             ->with('series', $series);
     }
 
-    public function update(Request $request, Serie $series)
+    public function update(SeriesFormRequest $request, Serie $series)
     {
-        $request->validate(['nome' => 'required|string|max:255']);
-
         $series->nome = $request->nome;
         $series->save();
 

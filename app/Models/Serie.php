@@ -12,4 +12,9 @@ class Serie extends Model
     /* Define os campos que podem ser alterados no obj, o fillable ignora todos os 
     dados que não estão definidos no array*/
     protected $fillable = ['nome'];
+
+    public function season()
+    {
+        return $this->hasMany(Season::class, 'series_id');
+    }
 }
