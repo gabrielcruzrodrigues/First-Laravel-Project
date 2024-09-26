@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SeriesFormRequest;
-use App\Models\Serie;
+use App\Models\Series;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
     
     public function index(Request $request) 
     {
-        $series = Serie::query()->orderBy('nome')->get();
+        $series = Series::all();
 
         $successMessage = session('mensagem.sucesso');
         $request->session()->forget('mensagem.sucesso');
@@ -29,13 +28,27 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {           
-        $serie = Serie::create($request->all());
+        $serie = Series::create($request->all());
+
+        for ($i = 1; $i < $request->seasonQty; $i++)
+        {
+            $season = $serie->seasons()->create([
+                'number' => $i
+            ]);
+
+            for ($j = 1; $j < $request->episodesPerSeason; $j++)
+            {
+                $season->episode()->create([
+                    'number' => $j
+                ]);
+            }
+        }
 
         return to_route('series.index')
             ->with('mensagem.sucesso', "A Série '$serie->nome' foi salva com sucesso!");
     }
 
-    public function destroy(Serie $series)
+    public function destroy(Series $series)
     {
         $series->delete();
 
@@ -43,14 +56,13 @@ class SeriesController extends Controller
             ->with('mensagem.sucesso', "A série '$series->nome' foi removida com sucesso!");
     }
 
-    public function edit(Serie $series)
+    public function edit(Series $series)
     {
-        dd($series->season);
         return view('series.edit')
             ->with('series', $series);
     }
 
-    public function update(SeriesFormRequest $request, Serie $series)
+    public function update(SeriesFormRequest $request, Series $series)
     {
         $series->nome = $request->nome;
         $series->save();
